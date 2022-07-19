@@ -8,14 +8,56 @@
 		</style>
 	</head>
 	<body>
+        <style>
+            .content{
+                width: 100%;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                overflow-x: hidden;
+            }
+            .inner{
+                height: 2000px;
+            }
+        </style>
+        <div id="canvasThree"></div>
+        <div class="content">
+            <div class="inner">
+                <h1>Hello world</h1>
+                <p></p>
+            </div>
+        </div>
 		<script src="js/three.js"></script>
 		<script>
             const mouse = new THREE.Vector2();
             const target = new THREE.Vector2();
             const windowHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2 );
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 500 );
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            const geometry = new THREE.BoxGeometry( 4, 4, 4, 3, 3, 3 );
+            const colors = [0x00ff00, 0xff0000, 0x0000ff, 0xffff00, 0xffa200, 0x000000]
+            let materials = [];
+            // scene.background = new THREE.Color( 0xff0000 );
+            
+            // renderer.setClearColor( 0xffffff, 0)
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.querySelector('#canvasThree').appendChild( renderer.domElement );
+            
+            colors.forEach( function( color ) {
+                materials.push(new THREE.MeshBasicMaterial( { color: color } ))
+            })
+
+            const cube = new THREE.Mesh( geometry, materials );
+            // const texture = new THREE.TextureLoader().load( "agua.webp" );
+            scene.add( cube );
+
+            camera.position.z = 50;
+
             
             document.addEventListener( 'mousemove', onMouseMove, false );
-            document.addEventListener( 'wheel', onMouseWheel, false );
+            // document.addEventListener( 'wheel', onMouseWheel, false );
             window.addEventListener( 'resize', onResize, false );
 
             function onMouseMove( event ) {
@@ -36,32 +78,13 @@
                 const width = window.innerWidth;
                 const height = window.innerHeight;
             
-            windowHalf.set( width / 2, height / 2 );
-                
-            camera.aspect = width / height;
+                windowHalf.set( width / 2, height / 2 );
+                    
+                camera.aspect = width / height;
                 camera.updateProjectionMatrix();
                 renderer.setSize( width, height );
                             
             }
-
-
-			const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 500 );
-
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            document.body.appendChild( renderer.domElement );
-            const geometry = new THREE.BoxGeometry( 4, 4, 4, 3, 3, 3 );
-            const colors = [0x00ff00, 0xff0000, 0x0000ff, 0xffff00, 0xffa200, 0x000000]
-            let materials = [];
-            colors.forEach( function( color ) {
-                materials.push(new THREE.MeshBasicMaterial( { color: color } ))
-            })
-            // const texture = new THREE.TextureLoader().load( "agua.webp" );
-            const cube = new THREE.Mesh( geometry, materials );
-            scene.add( cube );
-
-            camera.position.z = 50;
            
             function animate() {
                 target.x = ( 1 - mouse.x ) * 0.0002;
